@@ -2,6 +2,7 @@ const recordButton = document.getElementById('recordButton');
 const questionParagraph = document.getElementById('question');
 const responseParagraph = document.getElementById('response');
 const audioElement = document.getElementById('audio');
+const languageSelector = document.getElementById('languageSelect');
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
@@ -19,12 +20,14 @@ recognition.onresult = (event) => {
 };
 
 async function fetchResponseFromChatGPT(transcript) {
+    console.log(languageSelector.value);
+
     const response = await fetch('/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: transcript })
+        body: JSON.stringify({ message: transcript, language: languageSelector.value })
     });
     const data = await response.json();
     console.log(data.url);

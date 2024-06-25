@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
+    const language = req.body.language;
 
     console.log(`Bearer ${process.env.OPENAI_API_KEY}`);
     console.log(userMessage);
@@ -31,10 +32,11 @@ app.post('/chat', async (req, res) => {
         });
 
         console.log(completion.choices[0].message.content);
+        console.log(language);
         const chatGPTResponse = completion.choices[0].message.content;
 
         const urls = googleTTS.getAllAudioUrls(chatGPTResponse, {
-            lang: 'hu',
+            lang: language,
             slow: false,
             host: 'https://translate.google.com',
         });
