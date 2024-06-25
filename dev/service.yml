@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ask-chatgpt-service
+  namespace: ask-chatgpt
+  labels:
+    app: ask-chatgpt
+spec:
+  selector:
+    app: ask-chatgpt
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    name: http8080
+  type: ClusterIP

@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ask-chatgpt-ingress
+  namespace: ask-chatgpt
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: ask-chatgpt.codeware.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ask-chatgpt-service
+            port:
+              number: 8080
+  - host: ask-chatgpt.codeware.icu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ask-chatgpt-service
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - ask-chatgpt.codeware.icu
+    secretName: ask-chatgpt-public-tls

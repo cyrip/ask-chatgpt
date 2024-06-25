@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ask-chatgpt
+  namespace: ask-chatgpt
+  labels:
+    app: ask-chatgpt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ask-chatgpt
+  template:
+    metadata:
+      labels:
+        app: ask-chatgpt
+    spec:
+      containers:
+      - name: ask-chatgpt
+        image: cyrip/ask-chatgpt:1.0.0
+        env:
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: app-config
+                key: OPENAI_API_KEY 
+        ports:
+        - containerPort: 8080
