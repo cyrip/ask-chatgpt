@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: ask-chatgpt
-        image: cyrip/ask-chatgpt:1.0.0
+        image: cyrip/ask-chatgpt:1.0.1
         env:
           - name: OPENAI_API_KEY
             valueFrom:

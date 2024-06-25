@@ -2,7 +2,7 @@
 
 # Variables
 IMAGE  = cyrip/ask-chatgpt
-TAG = 1.0.0
+TAG = 1.0.1
 
 # targets
 .PHONY: all
