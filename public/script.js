@@ -19,6 +19,11 @@ recognition.onresult = (event) => {
     fetchResponseFromChatGPT(transcript);
 };
 
+stopAudioButton.addEventListener('click', () => {
+    audioElement.pause();
+    audioElement.currentTime = 0;
+});
+
 async function fetchResponseFromChatGPT(transcript) {
     console.log(languageSelector.value);
 
