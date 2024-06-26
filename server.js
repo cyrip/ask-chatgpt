@@ -15,6 +15,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
+console.log(`Env PORT: ${port}`);
 
 const users = [{
     'username': 'admin',
