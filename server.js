@@ -6,19 +6,79 @@ import googleTTS from 'google-tts-api';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import OpenAI from "openai";
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcryptjs';
+import session from 'express-session';
 
 dotenv.config();
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
-const openai = new OpenAI();
+const users = [{
+    'username': 'admin',
+    'password': process.env.ADMIN_PASSWORD,
+}];
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
+
+// Configure Passport.js
+passport.use(new LocalStrategy((username, password, done) => {
+    const user = users.find(u => u.username === username);
+    if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+    }
+    bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+            return done(null, user);
+        } else {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+    });
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, user.username);
+});
+
+passport.deserializeUser((username, done) => {
+    const user = users.find(u => u.username === username);
+    done(null, user);
+});
 
 app.use(express.static(path.join('./', 'public')));
 
-app.use(bodyParser.json());
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const openai = new OpenAI();
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+}));
 
 app.post('/chat', async (req, res) => {
+    console.log(req.isAuthenticated);
+    if (!req.isAuthenticated()) {
+        return res.status(401).send('Unauthorized');
+    }
+
     const userMessage = req.body.message;
     const language = req.body.language;
 
@@ -32,7 +92,6 @@ app.post('/chat', async (req, res) => {
         });
 
         console.log(completion.choices[0].message.content);
-        console.log(language);
         const chatGPTResponse = completion.choices[0].message.content;
 
         const urls = googleTTS.getAllAudioUrls(chatGPTResponse, {

@@ -7,6 +7,20 @@
 </head>
 <body>
     <h1>ChatGPT speak</h1>
+
+    <form method="post" action="/login" id="loginForm">
+        <label for="username">
+            Username:
+        </label>
+        <input type="text" name="username" id="username"/>
+        <label for="password">
+            Password:
+        </label>
+        <input type="text" name="password" id="password"/>
+        <button type="submit">login</button>
+    </form>
+
+    <br/>
     <button id="recordButton">I want to ask</button>
     <select id="languageSelect">
         <option value="hu">Hungarian</option>
@@ -16,7 +30,6 @@
     </select>
     <p id="question"></p>
     <p id="response"></p>
-
     <audio id="audio" controls></audio>
     <br/>
     <button id="stopAudioButton">Stop Audio</button>
