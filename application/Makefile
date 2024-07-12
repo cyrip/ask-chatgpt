@@ -11,3 +11,4 @@ all: create
 create:
 	kubectl apply -f ns.yml
 	kubectl apply -f application.yml
+	kubectl apply -f secret.yml
